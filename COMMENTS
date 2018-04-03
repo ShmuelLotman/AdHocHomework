@@ -1,0 +1,53 @@
+INSTRUCTIONS FOR RUNNING THE CODE - 
+
+Once files are on your local machine:
+    1. Open the browser of your choosing
+    2. Navigate to file:///{FILE PATH}/index.html
+
+===========================
+OPTIONAL DOCUMENTATION: 
+
+The code is wrapped within an IIFE for multiple reasons: 
+A: it prevents namespacing issues.
+B: it prevents pollution of the superior scope (in this case the global scope) with unnecessary (and potentially dangerous) variable/function declarations. 
+
+This code is wrapped within a DOMContentLoaded listener akin to the document.ready of JQuery. In ensuring we wait for the DOM tree to load (without subframes, stylesheets etc, for which we would use the "load" event)
+    we ensure that we have the elements we are looking to use and we are working with existing variables. Furthermore, by using it within "addEventListener", we don't limit it to a single callback, instead allowing for 
+    multiple callbacks to be attached to the event. While this check is not as extensive as JQuery's document.ready, which incorporates multiple fallback options into their readiness checker, it can be implemented and used instead
+    it is worthwhile to mention that the JQuery-level check for browser compatibility is an option if this is a significant concern. 
+
+In addition to creating an array for storing the household members, a unique member ID variable is declared in order to allow members to be
+    created/deleted and listeners to be assigned without needing to loop through the members each time a change is made. 
+
+Line 22 - The resetForm function clears the fields and removes any extant error messages from the DOM upon successful addition of member to household list
+
+Line 31 - The createDeleteButton function creates the delete button for each member list item added to the household display. In addition to being kept within a function that follows separation of concern principles,
+            this function allows buttons to be attached to members without needing to loop over anything. 
+
+Line 42 - The displayNewMember function creates the member list item element and appends it to the household list. It accepts the member information it needs in order
+            in order to create the element with all information needed. 
+
+Line 58 - The addHouseholdMember function creates the member object that will be passed to the display function for creation of the DOM element. It also pushes the object to the household array and invokes the function
+            that resets the form input fields and clears errors.
+
+Line 70 - The removeMember function, called when the delete button is clicked for a member in the household list, filters out the element that needs to be deleted from the household array and 
+            removes it from the DOM list as well. While this operation might not be too time-consuming in a small scale project and could work just fine, perhaps the optimized lookup
+            deletion and insertion times provided by maintaining an object instead of an array would be an attractive option, despite the slight complexities in interacting with nested objects.
+
+Line 78 - The createError function creates inline errors for displaying next to the proper form field. We check if the element to which the error is being attached has 
+            an error already, in which case there is no need to attach another. It is also possible to perhaps abstract error messages into a separate object, and utilize the validation object to specify
+            which error message to use, which would allow for a more dynamic form validation process that could grow with the needs of the form.
+            Nonetheless, it is perhaps cleaner in such a small sample to use validation within the function itself and save space.
+
+Line 87 - The validateForm function validates the form's age and relationship fields (the smoker field needs no validation as it stands). We return a boolean that determines whether a new member can/will be added.
+            Returning a boolean instead of calling the next function for adding elements directly allows for separation of concerns.
+
+Line 100 - The submitForm function submits the form and displays the stringified JSON (which replaces the returned value from an AJAX request).
+
+
+//COMMENT REGARDING INNERHTML USE:
+
+The code uses innerHTML for clearing/adding html from/to DOM. While there are a couple issues with innerHTML as they pertain to specific elements
+    in Internet Explorer 9 and below (https://caniuse.com/#search=innerhtml), those elements are not in use here and I therefore used it here. 
+    If a change would be requested, I would create an element using document.createElement and set the innerHTML within that 'safe' environment. 
+    I would then append that element to the DOM in the necessary place. 
